@@ -1,0 +1,5 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <ProjectReference Include="..\Hamdel.SharedKernel\Hamdel.SharedKernel.csproj" />
+  </ItemGroup>
+</Project>

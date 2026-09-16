@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <BlazorDisableThrowNavigationException>true</BlazorDisableThrowNavigationException>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Hamdel.Web.Client\Hamdel.Web.Client.csproj" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\BuildingBlocks\Hamdel.Infrastructure.Common\Hamdel.Infrastructure.Common.csproj" />
+    <ProjectReference Include="..\Modules\Organization\Hamdel.Modules.Organization\Hamdel.Modules.Organization.csproj" />
+    <ProjectReference Include="..\Modules\Content\Hamdel.Modules.Content\Hamdel.Modules.Content.csproj" />
+    <ProjectReference Include="..\Modules\CheckIn\Hamdel.Modules.CheckIn\Hamdel.Modules.CheckIn.csproj" />
+    <ProjectReference Include="..\Modules\Personal\Hamdel.Modules.Personal\Hamdel.Modules.Personal.csproj" />
+    <ProjectReference Include="..\Modules\Insights\Hamdel.Modules.Insights\Hamdel.Modules.Insights.csproj" />
+    <ProjectReference Include="..\Modules\Actions\Hamdel.Modules.Actions\Hamdel.Modules.Actions.csproj" />
+    <ProjectReference Include="..\Modules\Notifications\Hamdel.Modules.Notifications\Hamdel.Modules.Notifications.csproj" />
+    <ProjectReference Include="..\Modules\Pilot\Hamdel.Modules.Pilot\Hamdel.Modules.Pilot.csproj" />
+  </ItemGroup>
+
+</Project>
