@@ -1,0 +1,58 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/DuetHQ.Web.Client/DuetHQ.Web.Client.csproj" />
+    <Project Path="src/DuetHQ.Web/DuetHQ.Web.csproj" />
+  </Folder>
+  <Folder Name="/src/BuildingBlocks/">
+    <Project Path="src/BuildingBlocks/DuetHQ.Application.Abstractions/DuetHQ.Application.Abstractions.csproj" />
+    <Project Path="src/BuildingBlocks/DuetHQ.Infrastructure.Common/DuetHQ.Infrastructure.Common.csproj" />
+    <Project Path="src/BuildingBlocks/DuetHQ.SharedKernel/DuetHQ.SharedKernel.csproj" />
+  </Folder>
+  <Folder Name="/src/Modules/" />
+  <Folder Name="/src/Modules/Actions/">
+    <Project Path="src/Modules/Actions/DuetHQ.Modules.Actions.Contracts/DuetHQ.Modules.Actions.Contracts.csproj" />
+    <Project Path="src/Modules/Actions/DuetHQ.Modules.Actions/DuetHQ.Modules.Actions.csproj" />
+  </Folder>
+  <Folder Name="/src/Modules/CheckIn/">
+    <Project Path="src/Modules/CheckIn/DuetHQ.Modules.CheckIn.Contracts/DuetHQ.Modules.CheckIn.Contracts.csproj" />
+    <Project Path="src/Modules/CheckIn/DuetHQ.Modules.CheckIn/DuetHQ.Modules.CheckIn.csproj" />
+  </Folder>
+  <Folder Name="/src/Modules/Content/">
+    <Project Path="src/Modules/Content/DuetHQ.Modules.Content.Contracts/DuetHQ.Modules.Content.Contracts.csproj" />
+    <Project Path="src/Modules/Content/DuetHQ.Modules.Content/DuetHQ.Modules.Content.csproj" />
+  </Folder>
+  <Folder Name="/src/Modules/Insights/">
+    <Project Path="src/Modules/Insights/DuetHQ.Modules.Insights.Contracts/DuetHQ.Modules.Insights.Contracts.csproj" />
+    <Project Path="src/Modules/Insights/DuetHQ.Modules.Insights/DuetHQ.Modules.Insights.csproj" />
+  </Folder>
+  <Folder Name="/src/Modules/Notifications/">
+    <Project Path="src/Modules/Notifications/DuetHQ.Modules.Notifications.Contracts/DuetHQ.Modules.Notifications.Contracts.csproj" />
+    <Project Path="src/Modules/Notifications/DuetHQ.Modules.Notifications/DuetHQ.Modules.Notifications.csproj" />
+  </Folder>
+  <Folder Name="/src/Modules/Organization/">
+    <Project Path="src/Modules/Organization/DuetHQ.Modules.Organization.Contracts/DuetHQ.Modules.Organization.Contracts.csproj" />
+    <Project Path="src/Modules/Organization/DuetHQ.Modules.Organization/DuetHQ.Modules.Organization.csproj" />
+  </Folder>
+  <Folder Name="/src/Modules/Personal/">
+    <Project Path="src/Modules/Personal/DuetHQ.Modules.Personal.Contracts/DuetHQ.Modules.Personal.Contracts.csproj" />
+    <Project Path="src/Modules/Personal/DuetHQ.Modules.Personal/DuetHQ.Modules.Personal.csproj" />
+  </Folder>
+  <Folder Name="/src/Modules/Pilot/">
+    <Project Path="src/Modules/Pilot/DuetHQ.Modules.Pilot.Contracts/DuetHQ.Modules.Pilot.Contracts.csproj" />
+    <Project Path="src/Modules/Pilot/DuetHQ.Modules.Pilot/DuetHQ.Modules.Pilot.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/DuetHQ.ArchitectureTests/DuetHQ.ArchitectureTests.csproj" />
+    <Project Path="tests/DuetHQ.IntegrationTests/DuetHQ.IntegrationTests.csproj" />
+  </Folder>
+  <Folder Name="/tests/Modules/">
+    <Project Path="tests/Modules/DuetHQ.Modules.Actions.Tests/DuetHQ.Modules.Actions.Tests.csproj" />
+    <Project Path="tests/Modules/DuetHQ.Modules.CheckIn.Tests/DuetHQ.Modules.CheckIn.Tests.csproj" />
+    <Project Path="tests/Modules/DuetHQ.Modules.Content.Tests/DuetHQ.Modules.Content.Tests.csproj" />
+    <Project Path="tests/Modules/DuetHQ.Modules.Insights.Tests/DuetHQ.Modules.Insights.Tests.csproj" />
+    <Project Path="tests/Modules/DuetHQ.Modules.Notifications.Tests/DuetHQ.Modules.Notifications.Tests.csproj" />
+    <Project Path="tests/Modules/DuetHQ.Modules.Organization.Tests/DuetHQ.Modules.Organization.Tests.csproj" />
+    <Project Path="tests/Modules/DuetHQ.Modules.Personal.Tests/DuetHQ.Modules.Personal.Tests.csproj" />
+    <Project Path="tests/Modules/DuetHQ.Modules.Pilot.Tests/DuetHQ.Modules.Pilot.Tests.csproj" />
+  </Folder>
+</Solution>

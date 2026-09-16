@@ -1,0 +1,6 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <ProjectReference Include="..\DuetHQ.SharedKernel\DuetHQ.SharedKernel.csproj" />
+    <ProjectReference Include="..\DuetHQ.Application.Abstractions\DuetHQ.Application.Abstractions.csproj" />
+  </ItemGroup>
+</Project>

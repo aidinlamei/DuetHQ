@@ -1,0 +1,8 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\BuildingBlocks\DuetHQ.SharedKernel\DuetHQ.SharedKernel.csproj" />
+    <ProjectReference Include="..\..\..\BuildingBlocks\DuetHQ.Application.Abstractions\DuetHQ.Application.Abstractions.csproj" />
+    <ProjectReference Include="..\..\..\BuildingBlocks\DuetHQ.Infrastructure.Common\DuetHQ.Infrastructure.Common.csproj" />
+    <ProjectReference Include="..\DuetHQ.Modules.Organization.Contracts\DuetHQ.Modules.Organization.Contracts.csproj" />
+  </ItemGroup>
+</Project>

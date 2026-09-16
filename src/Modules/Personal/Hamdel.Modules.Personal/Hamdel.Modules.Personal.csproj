@@ -1,9 +1,0 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\BuildingBlocks\Hamdel.SharedKernel\Hamdel.SharedKernel.csproj" />
-    <ProjectReference Include="..\..\..\BuildingBlocks\Hamdel.Application.Abstractions\Hamdel.Application.Abstractions.csproj" />
-    <ProjectReference Include="..\..\..\BuildingBlocks\Hamdel.Infrastructure.Common\Hamdel.Infrastructure.Common.csproj" />
-    <ProjectReference Include="..\Hamdel.Modules.Personal.Contracts\Hamdel.Modules.Personal.Contracts.csproj" />
-    <ProjectReference Include="..\..\Content\Hamdel.Modules.Content.Contracts\Hamdel.Modules.Content.Contracts.csproj" />
-  </ItemGroup>
-</Project>

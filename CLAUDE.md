@@ -1,6 +1,6 @@
-# CLAUDE.md — Hamdel
+# CLAUDE.md — DuetHQ
 
-Hamdel is a multi-tenant SaaS where employees answer a short character-led check-in and leads/HR see only anonymous, aggregated team insights. Privacy is the product. Read this file fully before every task.
+DuetHQ is a multi-tenant SaaS where employees answer a short character-led check-in and leads/HR see only anonymous, aggregated team insights. Privacy is the product. Read this file fully before every task.
 
 The architecture reference is `docs/ARCHITECTURE.md`. Before changing anything, read the sections relevant to the task (at minimum §5 Modules and §6 Privacy invariants).
 
@@ -60,7 +60,7 @@ If a task seems to require breaking a higher rule, **stop and ask**. Never work 
 
 ### 3.2 Clean Architecture inside a module
 - `Domain`: entities, aggregates, value objects, domain events, domain services, specifications. No references to EF Core, ASP.NET, logging, or any infrastructure. No async I/O.
-- `Application`: commands, queries, handlers, validators, ports (interfaces), DTOs. Depends on Domain and `Hamdel.Application.Abstractions` only.
+- `Application`: commands, queries, handlers, validators, ports (interfaces), DTOs. Depends on Domain and `DuetHQ.Application.Abstractions` only.
 - `Infrastructure`: EF Core DbContext, configurations, migrations, repositories, port implementations, background services.
 - `Endpoints`: Minimal API endpoint groups mapping HTTP to commands/queries. No business logic.
 - Dependencies point inward only. Architecture tests enforce this; keep them green and extend them for new rules.
@@ -177,7 +177,7 @@ Test naming: `MethodOrScenario_Condition_ExpectedResult`. Use Shouldly for asser
 ```bash
 dotnet build -warnaserror
 dotnet test
-dotnet test tests/Hamdel.ArchitectureTests
-dotnet ef migrations add <Name> --project src/Modules/<Module>/Hamdel.Modules.<Module> --context <Module>DbContext --output-dir Infrastructure/Persistence/Migrations
-dotnet run --project src/Hamdel.Web
+dotnet test tests/DuetHQ.ArchitectureTests
+dotnet ef migrations add <Name> --project src/Modules/<Module>/DuetHQ.Modules.<Module> --context <Module>DbContext --output-dir Infrastructure/Persistence/Migrations
+dotnet run --project src/DuetHQ.Web
 ```

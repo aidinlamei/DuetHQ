@@ -1,6 +1,6 @@
-# Hamdel — Architecture Reference
+# DuetHQ — Architecture Reference
 
-> Codename: **Hamdel** (Persian: همدل, "empathetic"). Rename freely; namespaces use `Hamdel.*`.
+> Codenamed **Hamdel** (Persian: همدل, "empathetic") until ADR-0001; the codebase now uses the product name **DuetHQ** throughout — solution, namespaces (`DuetHQ.*`), and database roles (`duethq_*`).
 > Status: MVP / pilot architecture. This document is the single source of truth for structure and invariants.
 > Any change to a section marked **INVARIANT** requires a new ADR in `docs/adr/` and explicit human approval.
 
@@ -68,28 +68,29 @@ Employees answer a short, button-based check-in led by a friendly character. The
 ## 4. Solution layout
 
 ```
-Hamdel.sln
+DuetHQ.slnx
 CLAUDE.md
 docs/
   ARCHITECTURE.md
   adr/
-    0001-modular-monolith.md
-    0002-three-way-split-write.md
+    0001-codename-rename-hamdel-to-duethq.md
+    0002-modular-monolith.md
+    0003-three-way-split-write.md
     ...
 src/
-  Hamdel.Web/                         Composition root, endpoints mapping, auth, panels (Blazor Server)
-  Hamdel.Web.Client/                  Check-in client (Blazor WASM), character UI, PWA
+  DuetHQ.Web/                         Composition root, endpoints mapping, auth, panels (Blazor Server)
+  DuetHQ.Web.Client/                  Check-in client (Blazor WASM), character UI, PWA
   BuildingBlocks/
-    Hamdel.SharedKernel/              Entity, AggregateRoot, ValueObject, Result/Error, StronglyTypedId,
+    DuetHQ.SharedKernel/              Entity, AggregateRoot, ValueObject, Result/Error, StronglyTypedId,
                                       TenantId, MemberId, PeriodKey, SlotKey, Locale
-    Hamdel.Application.Abstractions/  ICommand, IQuery, handlers, IUnitOfWork, ITenantContext,
+    DuetHQ.Application.Abstractions/  ICommand, IQuery, handlers, IUnitOfWork, ITenantContext,
                                       ICurrentMember, IJobScheduler, validation pipeline
-    Hamdel.Infrastructure.Common/     EF base config, RLS connection interceptor, outbox,
+    DuetHQ.Infrastructure.Common/     EF base config, RLS connection interceptor, outbox,
                                       logging redaction, TimeProvider registration
   Modules/
     Organization/
-      Hamdel.Modules.Organization/            (Domain/, Application/, Infrastructure/, Endpoints/)
-      Hamdel.Modules.Organization.Contracts/  (public queries, DTOs, integration events)
+      DuetHQ.Modules.Organization/            (Domain/, Application/, Infrastructure/, Endpoints/)
+      DuetHQ.Modules.Organization.Contracts/  (public queries, DTOs, integration events)
     Content/        (+ .Contracts)
     CheckIn/        (+ .Contracts)
     Personal/       (+ .Contracts)
@@ -98,9 +99,9 @@ src/
     Notifications/  (+ .Contracts)
     Pilot/          (+ .Contracts)
 tests/
-  Hamdel.ArchitectureTests/
-  Hamdel.IntegrationTests/
-  Modules/Hamdel.Modules.<Name>.Tests/
+  DuetHQ.ArchitectureTests/
+  DuetHQ.IntegrationTests/
+  Modules/DuetHQ.Modules.<Name>.Tests/
 ```
 
 Each module project contains folders `Domain`, `Application`, `Infrastructure`, `Endpoints`. Types are `internal` by default. Other modules may reference **only** `<Module>.Contracts`.
@@ -350,11 +351,11 @@ Lead/HR opens panel → policy check → query snapshots (read model)
 - One PostgreSQL database; schemas per §5; `snake_case` naming.
 - Every tenant-scoped table has `tenant_id` and an RLS policy `tenant_id = current_setting('app.tenant_id')::uuid`. A DbConnection interceptor sets `app.tenant_id` per unit of work.
 - Database roles (least privilege):
-  - `hamdel_checkin` → `checkin` RW, `org` R, `content` R
-  - `hamdel_vault` → `vault` RW
-  - `hamdel_pool_writer` → `pool` INSERT only
-  - `hamdel_insights` → `pool` SELECT, `insights` RW, `org` R, `content` R
-  - `hamdel_app` → `org`, `actions`, `notify`, `pilot`, `content` as needed; **no** access to `pool` or `vault`
+  - `duethq_checkin` → `checkin` RW, `org` R, `content` R
+  - `duethq_vault` → `vault` RW
+  - `duethq_pool_writer` → `pool` INSERT only
+  - `duethq_insights` → `pool` SELECT, `insights` RW, `org` R, `content` R
+  - `duethq_app` → `org`, `actions`, `notify`, `pilot`, `content` as needed; **no** access to `pool` or `vault`
 - Each module has its own EF Core migrations assembly/folder and migration history table in its schema.
 - `pool.anonymous_response`: primary key UUID generated in application (v4), no default timestamp columns, no serial columns.
 - Read models may be materialized tables or views owned by the module that serves them.
@@ -424,10 +425,11 @@ SSO/SCIM (`Member.ExternalIdentity` later), Slack/Teams/desktop channels (`IChec
 
 | ADR | Decision |
 |---|---|
-| 0001 | Modular monolith with Clean Architecture per module |
-| 0002 | Three-way split write with in-memory shuffled buffer for anonymous responses |
-| 0003 | No runtime AI; scripted level-1 conversation |
-| 0004 | Cohorts and separate Leadership cohort |
-| 0005 | Suppression with complementary suppression, min group size ≥ 5 |
-| 0006 | Web + email + web push first; channels as adapters |
-| 0007 | Own mediator abstractions; third-party mediator optional |
+| 0001 | Codename rename: `Hamdel` → `DuetHQ` across solution, namespaces and database roles |
+| 0002 | Modular monolith with Clean Architecture per module |
+| 0003 | Three-way split write with in-memory shuffled buffer for anonymous responses |
+| 0004 | No runtime AI; scripted level-1 conversation |
+| 0005 | Cohorts and separate Leadership cohort |
+| 0006 | Suppression with complementary suppression, min group size ≥ 5 |
+| 0007 | Web + email + web push first; channels as adapters |
+| 0008 | Own mediator abstractions; third-party mediator optional |

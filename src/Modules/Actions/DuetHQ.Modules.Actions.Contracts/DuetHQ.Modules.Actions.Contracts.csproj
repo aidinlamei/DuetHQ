@@ -1,0 +1,5 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\BuildingBlocks\DuetHQ.SharedKernel\DuetHQ.SharedKernel.csproj" />
+  </ItemGroup>
+</Project>

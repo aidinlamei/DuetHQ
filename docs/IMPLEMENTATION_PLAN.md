@@ -1,4 +1,4 @@
-# Hamdel — Implementation Plan
+# DuetHQ — Implementation Plan
 
 This plan turns `docs/ARCHITECTURE.md` into ordered, reviewable tasks for Claude Code.
 Rules in `CLAUDE.md` apply to every task.
@@ -34,25 +34,25 @@ Goal: an empty but correctly structured solution that builds, tests and runs in 
 
 - [x] **P0-01 Solution skeleton**
   Refs: §4
-  - Create `Hamdel.sln`, `src/`, `tests/`, `docs/adr/` as in §4.
+  - Create `DuetHQ.slnx`, `src/`, `tests/`, `docs/adr/` as in §4.
   - `Directory.Build.props`: .NET 10, nullable, implicit usings, `TreatWarningsAsErrors`, analyzers enabled.
   - `Directory.Packages.props` with central package management.
   - `.editorconfig` with naming and style rules from `CLAUDE.md` §5.
-  - Empty projects: `Hamdel.Web`, `Hamdel.Web.Client`, three BuildingBlocks, and each module project + `.Contracts` project.
+  - Empty projects: `DuetHQ.Web`, `DuetHQ.Web.Client`, three BuildingBlocks, and each module project + `.Contracts` project.
   Done when: `dotnet build -warnaserror` passes; project references follow §5 (modules reference only Contracts).
 
 - [ ] **P0-02 Local environment**
   - `docker-compose.yml` with PostgreSQL 16 and a mail catcher (e.g. Mailpit).
   - `appsettings.Development.json` with placeholders; secrets via user-secrets.
-  Done when: `docker compose up` starts dependencies; `dotnet run --project src/Hamdel.Web` serves a health endpoint.
+  Done when: `docker compose up` starts dependencies; `dotnet run --project src/DuetHQ.Web` serves a health endpoint.
 
 - [ ] **P0-03 CI pipeline**
   - GitHub Actions: restore, build `-warnaserror`, test (with Testcontainers), fail on warnings.
   Done when: pipeline is green on an empty solution.
 
-- [ ] **P0-04 ADRs 0001–0007**
+- [ ] **P0-04 ADRs 0002–0008**
   Refs: §16
-  - Write the seven ADRs listed in §16 using a short template (Context, Decision, Consequences, Alternatives).
+  - Write the remaining seven ADRs listed in §16 (0001 already exists — the codename rename) using a short template (Context, Decision, Consequences, Alternatives).
   Done when: files exist in `docs/adr/` and are linked from §16.
 
 🧑 **Human checkpoint:** review structure, packages and ADRs.
@@ -68,7 +68,7 @@ Goal: the rules that protect privacy and structure are executable before any fea
   - Modules reference other modules only via `.Contracts`.
   - Inside modules: `Domain` has no dependency on `Application`, `Infrastructure`, EF Core, ASP.NET Core.
   - `Application` does not depend on `Infrastructure`.
-  - `Hamdel.Modules.Insights` has no reference to `Hamdel.Modules.Personal`.
+  - `DuetHQ.Modules.Insights` has no reference to `DuetHQ.Modules.Personal`.
   - No usage of `DateTime.Now` / `DateTime.UtcNow`.
   - Module types are `internal` except Contracts and module registration entry points.
   Done when: tests pass on the skeleton and a deliberately bad reference makes them fail (then remove it).
@@ -146,7 +146,7 @@ Goal: schemas, roles, RLS and outbox work and are proven by integration tests.
 - [ ] **P3-01 Database roles and schemas script**
   Refs: §10
   - Idempotent SQL script creating schemas and roles with least-privilege grants.
-  Done when: integration test verifies each role can only access its allowed schemas (e.g. `hamdel_app` cannot select from `pool` or `vault`).
+  Done when: integration test verifies each role can only access its allowed schemas (e.g. `duethq_app` cannot select from `pool` or `vault`).
 
 - [ ] **P3-02 Module DbContext base and RLS interceptor**
   Refs: §10, §11
@@ -230,7 +230,7 @@ Goal: a member can submit a check-in and get a result, with all privacy invarian
 
 - [ ] **P6-03 Anonymous buffer and flusher**
   Refs: §9.3, INV-02, INV-03
-  - In-memory per-tenant buffer; flusher shuffles and writes batches with `hamdel_pool_writer`; flush on shutdown.
+  - In-memory per-tenant buffer; flusher shuffles and writes batches with `duethq_pool_writer`; flush on shutdown.
   - `pool.anonymous_response` table without timestamps or sequences.
 
 - [ ] **P6-04 Submit check-in command**

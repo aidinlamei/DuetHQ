@@ -73,5 +73,5 @@ dotnet_naming_rule.private_fields_should_be_camel_case.style = camel_case_unders
 dotnet_naming_rule.private_fields_should_be_camel_case.severity = warning
 
 # Forbidden members (CLAUDE.md §9: DateTime.Now/UtcNow, .Result, .Wait(), async void)
-# are enforced by NetArchTest architecture tests (see tests/Hamdel.ArchitectureTests, task P1-01),
+# are enforced by NetArchTest architecture tests (see tests/DuetHQ.ArchitectureTests, task P1-01),
 # not by editorconfig, since a banned-API analyzer needs its own symbol list to be meaningful.
