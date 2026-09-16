@@ -41,7 +41,7 @@ Goal: an empty but correctly structured solution that builds, tests and runs in 
   - Empty projects: `DuetHQ.Web`, `DuetHQ.Web.Client`, three BuildingBlocks, and each module project + `.Contracts` project.
   Done when: `dotnet build -warnaserror` passes; project references follow §5 (modules reference only Contracts).
 
-- [ ] **P0-02 Local environment**
+- [x] **P0-02 Local environment**
   - `docker-compose.yml` with PostgreSQL 16 and a mail catcher (e.g. Mailpit).
   - `appsettings.Development.json` with placeholders; secrets via user-secrets.
   Done when: `docker compose up` starts dependencies; `dotnet run --project src/DuetHQ.Web` serves a health endpoint.
