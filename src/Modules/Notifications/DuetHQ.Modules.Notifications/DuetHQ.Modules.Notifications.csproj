@@ -6,4 +6,9 @@
     <ProjectReference Include="..\DuetHQ.Modules.Notifications.Contracts\DuetHQ.Modules.Notifications.Contracts.csproj" />
     <ProjectReference Include="..\..\Organization\DuetHQ.Modules.Organization.Contracts\DuetHQ.Modules.Organization.Contracts.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" />
+  </ItemGroup>
 </Project>

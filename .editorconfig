@@ -3,7 +3,7 @@ root = true
 [*]
 indent_style = space
 indent_size = 4
-end_of_line = crlf
+end_of_line = lf
 charset = utf-8
 trim_trailing_whitespace = true
 insert_final_newline = true
@@ -72,6 +72,7 @@ dotnet_naming_rule.private_fields_should_be_camel_case.symbols = private_fields
 dotnet_naming_rule.private_fields_should_be_camel_case.style = camel_case_underscore
 dotnet_naming_rule.private_fields_should_be_camel_case.severity = warning
 
-# Forbidden members (CLAUDE.md §9: DateTime.Now/UtcNow, .Result, .Wait(), async void)
-# are enforced by NetArchTest architecture tests (see tests/DuetHQ.ArchitectureTests, task P1-01),
-# not by editorconfig, since a banned-API analyzer needs its own symbol list to be meaningful.
+# Banned APIs (R6): DateTime.Now/UtcNow/Today and DateTimeOffset.Now/UtcNow are listed in BannedSymbols.txt
+# (linked into every project by Directory.Build.props) and enforced by Microsoft.CodeAnalysis.BannedApiAnalyzers.
+dotnet_diagnostic.RS0030.severity = error
+# CLAUDE.md section 9 also forbids .Result, .Wait() and async void; those are not enforced by tooling yet.

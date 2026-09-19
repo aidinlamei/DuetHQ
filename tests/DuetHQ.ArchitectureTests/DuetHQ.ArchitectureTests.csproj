@@ -10,6 +10,7 @@
     <PackageReference Include="xunit" />
     <PackageReference Include="xunit.runner.visualstudio" />
     <PackageReference Include="Shouldly" />
+    <PackageReference Include="TngTech.ArchUnitNET" />
   </ItemGroup>
 
   <ItemGroup>
@@ -17,8 +18,28 @@
     <Using Include="Shouldly" />
   </ItemGroup>
 
+  <!-- Explicit references on purpose: if one is dropped from DuetHQ.Web the architecture rules must fail loudly, not go silent. -->
   <ItemGroup>
     <ProjectReference Include="..\..\src\DuetHQ.Web\DuetHQ.Web.csproj" />
+    <ProjectReference Include="..\..\src\BuildingBlocks\DuetHQ.SharedKernel\DuetHQ.SharedKernel.csproj" />
+    <ProjectReference Include="..\..\src\BuildingBlocks\DuetHQ.Application.Abstractions\DuetHQ.Application.Abstractions.csproj" />
+    <ProjectReference Include="..\..\src\BuildingBlocks\DuetHQ.Infrastructure.Common\DuetHQ.Infrastructure.Common.csproj" />
+    <ProjectReference Include="..\..\src\Modules\Organization\DuetHQ.Modules.Organization\DuetHQ.Modules.Organization.csproj" />
+    <ProjectReference Include="..\..\src\Modules\Content\DuetHQ.Modules.Content\DuetHQ.Modules.Content.csproj" />
+    <ProjectReference Include="..\..\src\Modules\CheckIn\DuetHQ.Modules.CheckIn\DuetHQ.Modules.CheckIn.csproj" />
+    <ProjectReference Include="..\..\src\Modules\Personal\DuetHQ.Modules.Personal\DuetHQ.Modules.Personal.csproj" />
+    <ProjectReference Include="..\..\src\Modules\Insights\DuetHQ.Modules.Insights\DuetHQ.Modules.Insights.csproj" />
+    <ProjectReference Include="..\..\src\Modules\Actions\DuetHQ.Modules.Actions\DuetHQ.Modules.Actions.csproj" />
+    <ProjectReference Include="..\..\src\Modules\Notifications\DuetHQ.Modules.Notifications\DuetHQ.Modules.Notifications.csproj" />
+    <ProjectReference Include="..\..\src\Modules\Pilot\DuetHQ.Modules.Pilot\DuetHQ.Modules.Pilot.csproj" />
+    <ProjectReference Include="..\..\src\Modules\Organization\DuetHQ.Modules.Organization.Contracts\DuetHQ.Modules.Organization.Contracts.csproj" />
+    <ProjectReference Include="..\..\src\Modules\Content\DuetHQ.Modules.Content.Contracts\DuetHQ.Modules.Content.Contracts.csproj" />
+    <ProjectReference Include="..\..\src\Modules\CheckIn\DuetHQ.Modules.CheckIn.Contracts\DuetHQ.Modules.CheckIn.Contracts.csproj" />
+    <ProjectReference Include="..\..\src\Modules\Personal\DuetHQ.Modules.Personal.Contracts\DuetHQ.Modules.Personal.Contracts.csproj" />
+    <ProjectReference Include="..\..\src\Modules\Insights\DuetHQ.Modules.Insights.Contracts\DuetHQ.Modules.Insights.Contracts.csproj" />
+    <ProjectReference Include="..\..\src\Modules\Actions\DuetHQ.Modules.Actions.Contracts\DuetHQ.Modules.Actions.Contracts.csproj" />
+    <ProjectReference Include="..\..\src\Modules\Notifications\DuetHQ.Modules.Notifications.Contracts\DuetHQ.Modules.Notifications.Contracts.csproj" />
+    <ProjectReference Include="..\..\src\Modules\Pilot\DuetHQ.Modules.Pilot.Contracts\DuetHQ.Modules.Pilot.Contracts.csproj" />
   </ItemGroup>
 
 </Project>

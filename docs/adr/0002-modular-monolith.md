@@ -17,7 +17,7 @@ The MVP must also not require a rewrite if a module is later extracted.
 - **One PostgreSQL database, one schema per module**, one EF Core `DbContext` per module, each connecting with its own least-privilege database role (§10).
 - **Clean Architecture inside each module**: `Domain` → `Application` → `Infrastructure`, with `Endpoints` mapping HTTP to commands/queries. Dependencies point inward only.
 - **DDD tactical patterns and CQRS**: aggregates, value objects, strongly typed IDs, domain events; commands mutate aggregates, queries read from no-tracking read models.
-- **Boundaries are enforced by architecture tests** (NetArchTest, task P1-01), e.g. `DuetHQ.Modules.Insights` has no reference to `DuetHQ.Modules.Personal`; `Domain` has no dependency on `Application`, `Infrastructure`, EF Core or ASP.NET Core.
+- **Boundaries are enforced by architecture tests** (ArchUnitNET, task P1-01; layer rules refined in ADR-0009), e.g. `DuetHQ.Modules.Insights` has no reference to `DuetHQ.Modules.Personal`; `Domain` has no dependency on `Application`, `Infrastructure`, EF Core or ASP.NET Core.
 
 ## Consequences
 

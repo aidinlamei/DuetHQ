@@ -63,15 +63,22 @@ Goal: an empty but correctly structured solution that builds, tests and runs in 
 
 Goal: the rules that protect privacy and structure are executable before any feature exists.
 
-- [ ] **P1-01 Architecture tests**
-  Refs: §3, §5.1, CLAUDE.md §3, §9
-  - Modules reference other modules only via `.Contracts`.
-  - Inside modules: `Domain` has no dependency on `Application`, `Infrastructure`, EF Core, ASP.NET Core.
-  - `Application` does not depend on `Infrastructure`.
-  - `DuetHQ.Modules.Insights` has no reference to `DuetHQ.Modules.Personal`.
-  - No usage of `DateTime.Now` / `DateTime.UtcNow`.
-  - Module types are `internal` except Contracts and module registration entry points.
-  Done when: tests pass on the skeleton and a deliberately bad reference makes them fail (then remove it).
+- [x] **P1-01 Architecture tests**
+  Refs: §3, §5.1, CLAUDE.md §3, §9, ADR-0009
+  - R1 Module graph frozen: the graph declared in the `.csproj` files equals the §5 table exactly (asserted as data in the test); compiled references are checked against the declared ones.
+  - R2 A module references another module only through `.Contracts`, never a host project.
+  - R3 `.Contracts` projects depend on `DuetHQ.SharedKernel` only.
+  - R4 Layering inside modules (ADR-0009): `Domain` -> SharedKernel only; `Application` -> Domain + Abstractions + SharedKernel + any `.Contracts`; banned prefixes (`Microsoft.*`, `Npgsql`, `Serilog`, `System.Data.*`) in `.Domain`/`.Application`; `.Domain` also no `System.Threading.Tasks`/`System.IO`/`System.Net`.
+  - R5 `DuetHQ.Modules.Insights` has no reference to `DuetHQ.Modules.Personal` (INV-05): declared, compiled and type level.
+  - R6 No `DateTime.Now`/`UtcNow`/`Today`, `DateTimeOffset.Now`/`UtcNow` anywhere in the solution: a compile error via `Microsoft.CodeAnalysis.BannedApiAnalyzers` (`BannedSymbols.txt`, RS0030 = error), not a test.
+  - R7 Module types are `internal` except the `<Module>Module` entry point (and everything in `.Contracts`).
+  Done when: tests pass on the skeleton and each rule has been shown to fail against a deliberate violation (then removed).
+  Notes:
+  - PRE-1 Assembly anchors: one `public static class <Module>Module` per module with `Add<Module>(IServiceCollection, IConfiguration)` (needs `Microsoft.Extensions.DependencyInjection.Abstractions` and `Microsoft.Extensions.Configuration.Abstractions` in the eight module host projects only, never `.Contracts`; no ASP.NET `FrameworkReference`). The endpoint-mapping hook is deferred to the first module with endpoints. `DuetHQ.Web/Program.cs` calls the eight registrations explicitly, and `DuetHQ.ArchitectureTests` references every module host, every `.Contracts` and the three building blocks directly (no transitive reliance).
+  - PRE-2 Namespace/folder integrity: every `.cs` file under `src/` must declare exactly one file-scoped namespace equal to `<ProjectName>.<folders>`; module root files may only be `<Module>Module.cs`; only the top-level `Program.cs` of Web/Web.Client is exempt; `.razor` files may not use `@namespace`. Runs from source files only, independent of the layering tests.
+  - PRE-3 Line endings: `.gitattributes` (`* text=auto eol=lf`) added and `.editorconfig` switched to `end_of_line = lf`. The repository blobs were already LF, so no content changed.
+  - R1 also asserts exactly 8 module host and 8 `.Contracts` projects (21 projects under `src/`) and throws on any unresolved `ProjectReference`, so a silently skipped project cannot make it vacuous. The compiled-reference check becomes authoritative from Phase 2, once assemblies are non-empty.
+  - ADR-0009 resolves the `CLAUDE.md` §3.2 vs `ARCHITECTURE.md` §9.3 contradiction on what `Application` may reference.
 
 - [ ] **P1-02 Test infrastructure**
   - Shared Testcontainers PostgreSQL fixture.
@@ -89,6 +96,7 @@ Goal: all high-risk logic exists as pure, exhaustively tested code before any da
   Refs: §4, CLAUDE.md §4
   - `Entity`, `AggregateRoot` (with domain events), `ValueObject` base, `Result`/`Result<T>`/`Error`.
   - Strongly typed IDs: `TenantId`, `MemberId`, `TeamId`, and a generator pattern for the rest.
+  - `IIntegrationEvent` marker interface (must live here: `.Contracts` may depend on SharedKernel only, ADR-0009).
   - `Locale` value object (`fa`, `en`).
   - `[SensitiveData]` attribute.
   Done when: unit tests cover equality, Result composition, ID parsing.
@@ -114,7 +122,7 @@ Goal: all high-risk logic exists as pure, exhaustively tested code before any da
 
 - [ ] **P2-05 Cohort resolution**
   Refs: §7.3, INV-06
-  - `CohortRef` (`Team(id)`, `Leadership`, `Unassigned`).
+  - `CohortRef` (`Team(id)`, `Leadership`, `Unassigned`) in `DuetHQ.SharedKernel`, because contracts events carry it (ADR-0009).
   - `CohortResolver` (pure).
   Done when: tests cover member, lead of primary team, lead of non-primary team, executive, HR without team, no primary membership.
 
@@ -260,6 +268,7 @@ Goal: a member can submit a check-in and get a result, with all privacy invarian
 - [ ] **P7-02 Prompt scheduler**
   - Background job sends prompts per tenant timezone and slot to members without participation.
   Done when: tests with `FakeTimeProvider` cover timezones and no duplicate prompts.
+  Note: this task needs module edges that are not in the §5 table yet (e.g. Notifications -> CheckIn). Add each edge to the §5 table and to the R1 fixture (`ModuleCatalog.AllowedDependencies` in `tests/DuetHQ.ArchitectureTests`) in the same commit; the red build before that is expected, not a regression.
 
 - [ ] **P7-03 Web push channel**
   - VAPID keys config, subscription storage, send; fallback to email.
@@ -331,6 +340,7 @@ Goal: a member can submit a check-in and get a result, with all privacy invarian
 
 - [ ] **P11-02 Team broadcast**
   - `ActionCommitted` → email to team members (localized).
+  Note: this task needs a Notifications -> Actions edge that is not in the §5 table yet. Add it to the §5 table and to the R1 fixture (`ModuleCatalog.AllowedDependencies` in `tests/DuetHQ.ArchitectureTests`) in the same commit; the red build before that is expected, not a regression.
 
 - [ ] **P11-03 Action effect view**
   - In panels, show snapshots before and after a commitment (visible periods only).

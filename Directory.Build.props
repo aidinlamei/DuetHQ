@@ -13,4 +13,10 @@
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
   </PropertyGroup>
 
+  <!-- R6 (ARCHITECTURE.md 11.2): wall-clock APIs are banned at compile time in every project; BannedSymbols.txt is linked into each one. RS0030 is an error via .editorconfig. -->
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CodeAnalysis.BannedApiAnalyzers" PrivateAssets="all" />
+    <AdditionalFiles Include="$(MSBuildThisFileDirectory)BannedSymbols.txt" Link="BannedSymbols.txt" />
+  </ItemGroup>
+
 </Project>

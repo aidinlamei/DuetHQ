@@ -59,11 +59,12 @@ If a task seems to require breaking a higher rule, **stop and ask**. Never work 
 - Synchronous cross-module calls: Contracts query interfaces. Asynchronous: integration events via the module's outbox.
 
 ### 3.2 Clean Architecture inside a module
-- `Domain`: entities, aggregates, value objects, domain events, domain services, specifications. No references to EF Core, ASP.NET, logging, or any infrastructure. No async I/O.
-- `Application`: commands, queries, handlers, validators, ports (interfaces), DTOs. Depends on Domain and `DuetHQ.Application.Abstractions` only.
-- `Infrastructure`: EF Core DbContext, configurations, migrations, repositories, port implementations, background services.
-- `Endpoints`: Minimal API endpoint groups mapping HTTP to commands/queries. No business logic.
-- Dependencies point inward only. Architecture tests enforce this; keep them green and extend them for new rules.
+- `Domain`: entities, aggregates, value objects, domain events, domain services, specifications. Depends on `DuetHQ.SharedKernel` only. No references to EF Core, ASP.NET, logging, or any infrastructure. No async I/O.
+- `Application`: commands, queries, handlers, validators, ports (interfaces), DTOs. Depends on Domain, `DuetHQ.SharedKernel`, `DuetHQ.Application.Abstractions` and any module's `.Contracts` (its own included); cross-module calls go straight to a `.Contracts` interface, no adapter needed. Never another module's host assembly, never Infrastructure. No `Microsoft.*`, `Npgsql`, `Serilog` or `System.Data.*` namespaces (ADR-0009).
+- `Infrastructure`: EF Core DbContext, configurations, migrations, repositories, port implementations, background services. May also use `DuetHQ.Infrastructure.Common`.
+- `Endpoints`: Minimal API endpoint groups mapping HTTP to commands/queries. No business logic. Depends on Application and Contracts (plus ASP.NET Core); never on Domain or Infrastructure.
+- Dependencies point inward only. Architecture tests enforce this; keep them green and extend them for new rules. The module root namespace (`<Module>Module`, the DI entry point) and `.Endpoints` are the only exemptions from the banned-namespace rules.
+- `.Contracts` projects depend on `DuetHQ.SharedKernel` only and expose plain interfaces, DTOs and integration events (no `IQuery<T>`). Types shared across modules (IDs, `CohortRef`, the integration-event marker) live in `DuetHQ.SharedKernel`.
 
 ### 3.3 CQRS
 - Commands change state through aggregates and return `Result` / `Result<TId>`.
@@ -101,7 +102,7 @@ Do **not** introduce: generic repositories, service locator, static mutable stat
 - Classes `sealed` by default. `internal` by default inside modules.
 - `record` for DTOs and value objects. Primary constructors allowed for services.
 - Async all the way; every async method takes and forwards `CancellationToken`. No `.Result`, `.Wait()`, `async void`.
-- Time only through injected `TimeProvider`. `DateTime.Now`/`UtcNow` are forbidden (architecture test).
+- Time only through injected `TimeProvider`. `DateTime.Now`/`UtcNow`/`Today` and `DateTimeOffset.Now`/`UtcNow` are forbidden (compile error via BannedApiAnalyzers; see `BannedSymbols.txt`).
 - Period and slot keys only through `TenantCalendarService`. Never compute weeks with `ISOWeek` or UTC directly.
 - Naming: `SubmitCheckInCommand`, `SubmitCheckInCommandHandler`, `GetTeamSnapshotQuery`, `TeamSnapshotDto`, `ParticipationRecordedIntegrationEvent`.
 - No magic strings for codes; use constants/value objects (`EmotionStateCode`, `NeedCode`).

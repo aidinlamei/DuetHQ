@@ -61,7 +61,8 @@ Employees answer a short, button-based check-in led by a friendly character. The
 | Logging | Serilog with redaction policy (see §11) |
 | Email | SMTP / provider behind `IEmailSender` |
 | Web push | VAPID Web Push behind `IWebPushSender` |
-| Tests | xUnit, Shouldly, Testcontainers (PostgreSQL), NetArchTest, FsCheck (property tests) |
+| Tests | xUnit, Shouldly, Testcontainers (PostgreSQL), ArchUnitNET (`TngTech.ArchUnitNET`), FsCheck (property tests) |
+| Banned APIs | `Microsoft.CodeAnalysis.BannedApiAnalyzers`; `BannedSymbols.txt` at the repo root is linked into every project, RS0030 is an error (see §11.2) |
 
 ---
 
@@ -82,7 +83,8 @@ src/
   DuetHQ.Web.Client/                  Check-in client (Blazor WASM), character UI, PWA
   BuildingBlocks/
     DuetHQ.SharedKernel/              Entity, AggregateRoot, ValueObject, Result/Error, StronglyTypedId,
-                                      TenantId, MemberId, PeriodKey, SlotKey, Locale
+                                      TenantId, MemberId, TeamId, PeriodKey, SlotKey, CohortRef, Locale,
+                                      IIntegrationEvent (marker)
     DuetHQ.Application.Abstractions/  ICommand, IQuery, handlers, IUnitOfWork, ITenantContext,
                                       ICurrentMember, IJobScheduler, validation pipeline
     DuetHQ.Infrastructure.Common/     EF base config, RLS connection interceptor, outbox,
@@ -104,7 +106,9 @@ tests/
   Modules/DuetHQ.Modules.<Name>.Tests/
 ```
 
-Each module project contains folders `Domain`, `Application`, `Infrastructure`, `Endpoints`. Types are `internal` by default. Other modules may reference **only** `<Module>.Contracts`.
+Each module project contains folders `Domain`, `Application`, `Infrastructure`, `Endpoints`, plus one public entry point `<Module>Module` in the module's root namespace (e.g. `OrganizationModule` with `AddOrganization(IServiceCollection, IConfiguration)`), which `DuetHQ.Web` calls explicitly from `Program.cs`. Types are `internal` by default; the entry point and `.Contracts` are the only public types. Other modules may reference **only** `<Module>.Contracts`.
+
+`DuetHQ.SharedKernel` is the only project a `.Contracts` project may reference (ADR-0009), so every type shared across modules' contracts lives there: strongly typed IDs, `CohortRef` and the integration-event marker. Layer dependency rules are recorded in ADR-0009 and enforced by `tests/DuetHQ.ArchitectureTests`.
 
 ---
 
@@ -371,7 +375,7 @@ Lead/HR opens panel → policy check → query snapshots (read model)
 - Exceptions never include payloads. Problem details are generic.
 
 ### 11.2 Time
-- Inject `TimeProvider`. Never `DateTime.Now`/`UtcNow` directly.
+- Inject `TimeProvider`. Never `DateTime.Now`/`UtcNow`/`Today` or `DateTimeOffset.Now`/`UtcNow` directly: they are listed in `BannedSymbols.txt` and rejected at compile time (BannedApiAnalyzers, RS0030 = error), in the IDE and in CI.
 - `PeriodKey` and `SlotKey` computed only by `TenantCalendarService` using tenant `WeekStart` and `TimeZoneId`.
 
 ### 11.3 Localization
@@ -403,7 +407,7 @@ Lead/HR opens panel → policy check → query snapshots (read model)
 
 | Layer | What | Tools |
 |---|---|---|
-| Architecture | Module isolation, layering, invariant guards (e.g. `Insights` has no reference to `Personal`; no `DateTime.Now`) | NetArchTest |
+| Architecture | Module isolation (declared and compiled reference graph frozen against §5), layering (ADR-0009), namespace/folder integrity, internal-by-default types, invariant guards (e.g. `Insights` has no reference to `Personal`). `DateTime.Now`-style calls are a compile error, not a test (§11.2). | ArchUnitNET, BannedApiAnalyzers |
 | Domain | Scoring, cohort resolution, suppression, playbook specs, safety evaluator — exhaustive unit + property tests | xUnit, FsCheck, Shouldly |
 | Application | Command/query handlers with in-memory fakes | xUnit |
 | Integration | Real PostgreSQL: RLS isolation between tenants, DB role permissions, split write, no timestamps in pool | Testcontainers |
@@ -433,3 +437,4 @@ SSO/SCIM (`Member.ExternalIdentity` later), Slack/Teams/desktop channels (`IChec
 | [0006](adr/0006-suppression-min-group-size.md) | Suppression with complementary suppression, min group size ≥ 5 |
 | [0007](adr/0007-notification-channels-as-adapters.md) | Web + email + web push first; channels as adapters |
 | [0008](adr/0008-own-mediator-abstractions.md) | Own mediator abstractions; third-party mediator optional |
+| [0009](adr/0009-application-layer-and-contracts.md) | Application layer may reference `.Contracts`; layer dependency rules |

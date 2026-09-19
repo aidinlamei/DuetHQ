@@ -1,3 +1,11 @@
+using DuetHQ.Modules.Actions;
+using DuetHQ.Modules.CheckIn;
+using DuetHQ.Modules.Content;
+using DuetHQ.Modules.Insights;
+using DuetHQ.Modules.Notifications;
+using DuetHQ.Modules.Organization;
+using DuetHQ.Modules.Personal;
+using DuetHQ.Modules.Pilot;
 using DuetHQ.Web.Components;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -8,6 +16,17 @@ builder.Services.AddRazorComponents()
     .AddInteractiveWebAssemblyComponents();
 
 builder.Services.AddHealthChecks();
+
+// Explicit composition root: every module is wired here, not through bare project references.
+builder.Services
+    .AddOrganization(builder.Configuration)
+    .AddContent(builder.Configuration)
+    .AddCheckIn(builder.Configuration)
+    .AddPersonal(builder.Configuration)
+    .AddInsights(builder.Configuration)
+    .AddActions(builder.Configuration)
+    .AddNotifications(builder.Configuration)
+    .AddPilot(builder.Configuration);
 
 var app = builder.Build();
 

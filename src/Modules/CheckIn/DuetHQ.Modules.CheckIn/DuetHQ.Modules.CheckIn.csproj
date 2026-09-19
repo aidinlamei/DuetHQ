@@ -9,4 +9,9 @@
     <ProjectReference Include="..\..\Personal\DuetHQ.Modules.Personal.Contracts\DuetHQ.Modules.Personal.Contracts.csproj" />
     <ProjectReference Include="..\..\Insights\DuetHQ.Modules.Insights.Contracts\DuetHQ.Modules.Insights.Contracts.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" />
+  </ItemGroup>
 </Project>
