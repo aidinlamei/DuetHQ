@@ -46,11 +46,10 @@ Goal: an empty but correctly structured solution that builds, tests and runs in 
   - `appsettings.Development.json` with placeholders; secrets via user-secrets.
   Done when: `docker compose up` starts dependencies; `dotnet run --project src/DuetHQ.Web` serves a health endpoint.
 
-- [ ] **P0-03 CI pipeline**
+- [x] **P0-03 CI pipeline**
   - GitHub Actions: restore, build `-warnaserror`, test (with Testcontainers), fail on warnings.
   Done when: pipeline is green on an empty solution.
-  Status: `.github/workflows/ci.yml` written and its steps pass locally. **Not checked off:** needs a GitHub remote + push to see a green run (🧑 architect/Ouches). No Testcontainers usage yet (arrives in P1-02).
-
+  Status: green on GitHub Actions (first run on `main`, 2026-09-19).
 - [x] **P0-04 ADRs 0002–0008**
   Refs: §16
   - Write the remaining seven ADRs listed in §16 (0001 already exists — the codename rename) using a short template (Context, Decision, Consequences, Alternatives).
