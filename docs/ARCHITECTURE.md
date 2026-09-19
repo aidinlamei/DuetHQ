@@ -289,7 +289,7 @@ AnonymousBufferFlusher (background):
   - flush on graceful shutdown
 ```
 
-**Accepted trade-off (ADR-0002):** a hard crash may lose buffered anonymous responses. Participation may then slightly exceed respondent count. This is preferable to any durable store that correlates identity and content (same transaction id, insertion order, timestamps).
+**Accepted trade-off (ADR-0003):** a hard crash may lose buffered anonymous responses. Participation may then slightly exceed respondent count. This is preferable to any durable store that correlates identity and content (same transaction id, insertion order, timestamps).
 
 ### 9.4 Period close and aggregation
 
@@ -425,11 +425,11 @@ SSO/SCIM (`Member.ExternalIdentity` later), Slack/Teams/desktop channels (`IChec
 
 | ADR | Decision |
 |---|---|
-| 0001 | Codename rename: `Hamdel` → `DuetHQ` across solution, namespaces and database roles |
-| 0002 | Modular monolith with Clean Architecture per module |
-| 0003 | Three-way split write with in-memory shuffled buffer for anonymous responses |
-| 0004 | No runtime AI; scripted level-1 conversation |
-| 0005 | Cohorts and separate Leadership cohort |
-| 0006 | Suppression with complementary suppression, min group size ≥ 5 |
-| 0007 | Web + email + web push first; channels as adapters |
-| 0008 | Own mediator abstractions; third-party mediator optional |
+| [0001](adr/0001-codename-rename-hamdel-to-duethq.md) | Codename rename: `Hamdel` → `DuetHQ` across solution, namespaces and database roles |
+| [0002](adr/0002-modular-monolith.md) | Modular monolith with Clean Architecture per module |
+| [0003](adr/0003-three-way-split-write.md) | Three-way split write with in-memory shuffled buffer for anonymous responses |
+| [0004](adr/0004-no-runtime-ai-scripted-conversation.md) | No runtime AI; scripted level-1 conversation |
+| [0005](adr/0005-cohorts-and-leadership-cohort.md) | Cohorts and separate Leadership cohort |
+| [0006](adr/0006-suppression-min-group-size.md) | Suppression with complementary suppression, min group size ≥ 5 |
+| [0007](adr/0007-notification-channels-as-adapters.md) | Web + email + web push first; channels as adapters |
+| [0008](adr/0008-own-mediator-abstractions.md) | Own mediator abstractions; third-party mediator optional |

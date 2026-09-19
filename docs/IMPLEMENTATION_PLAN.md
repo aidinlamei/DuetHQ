@@ -49,8 +49,9 @@ Goal: an empty but correctly structured solution that builds, tests and runs in 
 - [ ] **P0-03 CI pipeline**
   - GitHub Actions: restore, build `-warnaserror`, test (with Testcontainers), fail on warnings.
   Done when: pipeline is green on an empty solution.
+  Status: `.github/workflows/ci.yml` written and its steps pass locally. **Not checked off:** needs a GitHub remote + push to see a green run (🧑 architect/Ouches). No Testcontainers usage yet (arrives in P1-02).
 
-- [ ] **P0-04 ADRs 0002–0008**
+- [x] **P0-04 ADRs 0002–0008**
   Refs: §16
   - Write the remaining seven ADRs listed in §16 (0001 already exists — the codename rename) using a short template (Context, Decision, Consequences, Alternatives).
   Done when: files exist in `docs/adr/` and are linked from §16.
