@@ -75,7 +75,7 @@ Goal: the rules that protect privacy and structure are executable before any fea
   Done when: tests pass on the skeleton and each rule has been shown to fail against a deliberate violation (then removed).
   Notes:
   - PRE-1 Assembly anchors: one `public static class <Module>Module` per module with `Add<Module>(IServiceCollection, IConfiguration)` (needs `Microsoft.Extensions.DependencyInjection.Abstractions` and `Microsoft.Extensions.Configuration.Abstractions` in the eight module host projects only, never `.Contracts`; no ASP.NET `FrameworkReference`). The endpoint-mapping hook is deferred to the first module with endpoints. `DuetHQ.Web/Program.cs` calls the eight registrations explicitly, and `DuetHQ.ArchitectureTests` references every module host, every `.Contracts` and the three building blocks directly (no transitive reliance).
-  - PRE-2 Namespace/folder integrity: every `.cs` file under `src/` must declare exactly one file-scoped namespace equal to `<ProjectName>.<folders>`; module root files may only be `<Module>Module.cs`; only the top-level `Program.cs` of Web/Web.Client is exempt; `.razor` files may not use `@namespace`. Runs from source files only, independent of the layering tests.
+  - PRE-2 Namespace/folder integrity: every `.cs` file under `src/` must declare exactly one file-scoped namespace equal to `<ProjectName>.<folders>`; module root files may only be `<Module>Module.cs`; only the top-level `Program.cs` of Web/Web.Client is exempt; `.razor` files may not use `@namespace`; at most one top-level type declaration per file (CLAUDE.md section 5; sealed-by-default is left to CA1852). Every file is parsed once with Roslyn (`Microsoft.CodeAnalysis.CSharp` 5.0.0, referenced by `DuetHQ.ArchitectureTests` only) and all file-level rules assert from that syntax tree; it loads no assemblies, so it is independent of the layering tests.
   - PRE-3 Line endings: `.gitattributes` (`* text=auto eol=lf`) added and `.editorconfig` switched to `end_of_line = lf`. The repository blobs were already LF, so no content changed.
   - R1 also asserts exactly 8 module host and 8 `.Contracts` projects (21 projects under `src/`) and throws on any unresolved `ProjectReference`, so a silently skipped project cannot make it vacuous. The compiled-reference check becomes authoritative from Phase 2, once assemblies are non-empty.
   - ADR-0009 resolves the `CLAUDE.md` §3.2 vs `ARCHITECTURE.md` §9.3 contradiction on what `Application` may reference.
@@ -99,7 +99,8 @@ Goal: all high-risk logic exists as pure, exhaustively tested code before any da
   - `IIntegrationEvent` marker interface (must live here: `.Contracts` may depend on SharedKernel only, ADR-0009).
   - `Locale` value object (`fa`, `en`).
   - `[SensitiveData]` attribute.
-  Done when: unit tests cover equality, Result composition, ID parsing.
+  - **P1-01 follow-up (must not be forgotten):** Remove `WithoutRequiringPositiveResults()` from R4 and R7 once the shared kernel and the first module types exist. Assert instead that each module x layer namespace that contains files contains at least one type evaluated by the rule. Until this is done, R4 and R7 are structurally unable to fail on real code. Call sites (each carries a `// TODO(P2-01)` comment): `LayeringTests` (x4), `VisibilityTests` (x1), and `ModuleDependencyTests.Insights_Types_NeverDependOnPersonalTypes` (the R5 type-level rule, same treatment).
+  Done when: unit tests cover equality, Result composition, ID parsing; and the P1-01 follow-up above is done (`grep -rn "TODO(P2-01)" tests/` finds nothing).
 
 - [ ] **P2-02 Application abstractions**
   Refs: §3.1, CLAUDE.md §3.3
@@ -155,6 +156,7 @@ Goal: schemas, roles, RLS and outbox work and are proven by integration tests.
   Refs: §10
   - Idempotent SQL script creating schemas and roles with least-privilege grants.
   Done when: integration test verifies each role can only access its allowed schemas (e.g. `duethq_app` cannot select from `pool` or `vault`).
+  Note: when Npgsql and Serilog are first installed (Serilog is expected with P3-04), run a one-off violation demo for each banned prefix (a temporary type in a module `.Domain`/`.Application` namespace that uses it) in the same commit, then revert; the `Npgsql` and `Serilog` prefixes in R4 have never been proven to bite.
 
 - [ ] **P3-02 Module DbContext base and RLS interceptor**
   Refs: §10, §11

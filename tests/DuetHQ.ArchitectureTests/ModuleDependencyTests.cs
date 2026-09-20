@@ -167,6 +167,7 @@ public sealed class ModuleDependencyTests
     {
         var rule = Types().That().ResideInNamespaceMatching(@"^DuetHQ\.Modules\.Insights(\..*)?$")
             .Should().NotDependOnAnyTypesThat().ResideInNamespaceMatching(@"^DuetHQ\.Modules\.Personal(\..*)?$")
+            // TODO(P2-01): remove WithoutRequiringPositiveResults() (see the P2-01 sub-task in docs/IMPLEMENTATION_PLAN.md); until then this rule cannot fail on real code.
             .WithoutRequiringPositiveResults();
 
         Solution.AssertNoViolations(rule);

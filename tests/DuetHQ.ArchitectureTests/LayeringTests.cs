@@ -36,6 +36,7 @@ public sealed class LayeringTests
         Solution.AssertNoViolations(
             Types().That().ResideInNamespaceMatching(Layer(module, "Domain"))
                 .Should().NotDependOnAnyTypesThat().ResideInNamespaceMatching(forbidden)
+                // TODO(P2-01): remove WithoutRequiringPositiveResults() (see the P2-01 sub-task in docs/IMPLEMENTATION_PLAN.md); until then this rule cannot fail on real code.
                 .WithoutRequiringPositiveResults());
     }
 
@@ -50,6 +51,7 @@ public sealed class LayeringTests
         Solution.AssertNoViolations(
             Types().That().ResideInNamespaceMatching(Layer(module, "Application"))
                 .Should().NotDependOnAnyTypesThat().ResideInNamespaceMatching(forbidden)
+                // TODO(P2-01): remove WithoutRequiringPositiveResults() (see the P2-01 sub-task in docs/IMPLEMENTATION_PLAN.md); until then this rule cannot fail on real code.
                 .WithoutRequiringPositiveResults());
     }
 
@@ -62,6 +64,7 @@ public sealed class LayeringTests
         Solution.AssertNoViolations(
             Types().That().ResideInNamespaceMatching(Layer(module, "Infrastructure"))
                 .Should().NotDependOnAnyTypesThat().ResideInNamespaceMatching(forbidden)
+                // TODO(P2-01): remove WithoutRequiringPositiveResults() (see the P2-01 sub-task in docs/IMPLEMENTATION_PLAN.md); until then this rule cannot fail on real code.
                 .WithoutRequiringPositiveResults());
     }
 
@@ -74,6 +77,7 @@ public sealed class LayeringTests
         Solution.AssertNoViolations(
             Types().That().ResideInNamespaceMatching(Layer(module, "Endpoints"))
                 .Should().NotDependOnAnyTypesThat().ResideInNamespaceMatching(forbidden)
+                // TODO(P2-01): remove WithoutRequiringPositiveResults() (see the P2-01 sub-task in docs/IMPLEMENTATION_PLAN.md); until then this rule cannot fail on real code.
                 .WithoutRequiringPositiveResults());
     }
 

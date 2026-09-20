@@ -21,6 +21,7 @@ public sealed class VisibilityTests
         Solution.AssertNoViolations(
             Types().That().ResideInAssembly(host.FullName!).And().DoNotHaveFullName(entryPoint)
                 .Should().NotBePublic()
+                // TODO(P2-01): remove WithoutRequiringPositiveResults() (see the P2-01 sub-task in docs/IMPLEMENTATION_PLAN.md); until then this rule cannot fail on real code.
                 .WithoutRequiringPositiveResults());
     }
 

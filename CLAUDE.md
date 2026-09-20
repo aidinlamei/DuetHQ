@@ -153,6 +153,8 @@ A task is done only when:
 
 Test naming: `MethodOrScenario_Condition_ExpectedResult`. Use Shouldly for assertions. No test depends on wall-clock time; use `FakeTimeProvider`.
 
+Tests must use `FakeTimeProvider`. If a test ever genuinely needs wall-clock time, it uses `TimeProvider.System` explicitly, never `DateTime.UtcNow` (the banned-API analyzer applies to test projects on purpose).
+
 ---
 
 ## 9. Forbidden (quick checklist)

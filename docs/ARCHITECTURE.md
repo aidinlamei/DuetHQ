@@ -61,7 +61,7 @@ Employees answer a short, button-based check-in led by a friendly character. The
 | Logging | Serilog with redaction policy (see §11) |
 | Email | SMTP / provider behind `IEmailSender` |
 | Web push | VAPID Web Push behind `IWebPushSender` |
-| Tests | xUnit, Shouldly, Testcontainers (PostgreSQL), ArchUnitNET (`TngTech.ArchUnitNET`), FsCheck (property tests) |
+| Tests | xUnit, Shouldly, Testcontainers (PostgreSQL), ArchUnitNET (`TngTech.ArchUnitNET`), Roslyn `Microsoft.CodeAnalysis.CSharp` (source-file rules in the architecture tests only), FsCheck (property tests) |
 | Banned APIs | `Microsoft.CodeAnalysis.BannedApiAnalyzers`; `BannedSymbols.txt` at the repo root is linked into every project, RS0030 is an error (see §11.2) |
 
 ---
