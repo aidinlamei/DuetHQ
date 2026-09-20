@@ -39,5 +39,21 @@ jobs:
       - name: Build
         run: dotnet build DuetHQ.slnx --configuration Release --no-restore -warnaserror
 
-      - name: Test
-        run: dotnet test DuetHQ.slnx --configuration Release --no-build --logger "console;verbosity=normal"
+      # Container-free: every test project except DuetHQ.IntegrationTests, chosen by path (new test projects are picked up automatically).
+      - name: Test (no containers)
+        run: |
+          projects=$(find tests -name '*.csproj' ! -path 'tests/DuetHQ.IntegrationTests/*' | sort)
+          echo "$projects"
+          test -n "$projects"
+          status=0
+          for project in $projects; do
+            dotnet test "$project" --configuration Release --no-build --logger "console;verbosity=normal" || status=1
+          done
+          exit $status
+
+      # Separate steps on purpose: their durations in the Actions UI show what the container costs (pull vs. start + tests).
+      - name: Pull PostgreSQL image
+        run: docker compose pull postgres
+
+      - name: Integration tests (Testcontainers)
+        run: dotnet test tests/DuetHQ.IntegrationTests --configuration Release --no-build --logger "console;verbosity=detailed"

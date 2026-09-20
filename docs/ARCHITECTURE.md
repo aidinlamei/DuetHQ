@@ -53,7 +53,7 @@ Employees answer a short, button-based check-in led by a friendly character. The
 | Runtime | .NET 10 (LTS), C# latest |
 | Host / API | ASP.NET Core, Minimal API endpoint groups per module |
 | UI | Blazor Web App. Check-in client = Interactive WebAssembly + PWA manifest/service worker. Panels = Interactive Server. If PWA support in the Web App template is insufficient, the check-in client becomes a standalone Blazor WASM project (same contracts). |
-| Database | PostgreSQL 16+, one database, one schema per module, Row-Level Security by tenant |
+| Database | PostgreSQL 16 (exact minor pinned in `docker-compose.yml` and the integration-test fixture, currently 16.15; upgrades are deliberate commits), one database, one schema per module, Row-Level Security by tenant |
 | ORM | EF Core (one DbContext per module) for writes; EF Core no-tracking or Dapper for read models |
 | Messaging | In-process mediator behind our own abstractions (`ICommandHandler<>`, `IQueryHandler<>`). MediatR allowed only behind these abstractions and only if its license terms are acceptable. |
 | Integration events | Transactional outbox per module, in-process dispatcher |

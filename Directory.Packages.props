@@ -25,6 +25,8 @@
     <PackageVersion Include="Shouldly" Version="4.2.1" />
     <PackageVersion Include="Microsoft.CodeAnalysis.CSharp" Version="5.0.0" />
     <PackageVersion Include="TngTech.ArchUnitNET" Version="0.13.4" />
+    <PackageVersion Include="Testcontainers.PostgreSql" Version="4.15.0" />
+    <PackageVersion Include="Npgsql" Version="10.0.3" />
   </ItemGroup>
 
 </Project>

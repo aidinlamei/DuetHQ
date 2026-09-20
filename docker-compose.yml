@@ -1,6 +1,8 @@
 services:
   postgres:
-    image: postgres:16
+    # Exact minor on purpose: RLS and per-role grant tests must not change behaviour under a silent bump.
+    # Keep in sync with PostgresFixture.Image (a test compares them). Upgrade deliberately, in its own commit.
+    image: postgres:16.15
     environment:
       POSTGRES_USER: duethq
       POSTGRES_PASSWORD: duethq_dev

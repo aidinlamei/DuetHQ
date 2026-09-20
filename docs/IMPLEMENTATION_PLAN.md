@@ -85,6 +85,9 @@ Goal: the rules that protect privacy and structure are executable before any fea
   - In-memory Serilog test sink to capture logs.
   - `FakeTimeProvider` helpers.
   Done when: a sample integration test runs against a real container in CI.
+  Stages (the container comes first and alone, so its cost is measured against one test):
+  - A: `PostgresFixture` (one `postgres:16.15` container for the whole test assembly via an xUnit collection fixture; databases isolated per test class, roles created idempotently; a dedicated container for a pristine cluster is deferred until a test needs it), one smoke test, a Docker-free drift test comparing the image tag with `docker-compose.yml`, and CI split into container-free / image pull / integration steps.
+  - B (after A is green on Ubuntu CI): `tests/DuetHQ.TestSupport` (own `ILogEventSink` that keeps raw `LogEvent`s, `FakeTimeProvider` helpers), database/role helpers with a multi-role test, and an architecture rule that no project under `src/` references `DuetHQ.TestSupport` directly or transitively.
 
 ---
 
@@ -156,7 +159,7 @@ Goal: schemas, roles, RLS and outbox work and are proven by integration tests.
   Refs: §10
   - Idempotent SQL script creating schemas and roles with least-privilege grants.
   Done when: integration test verifies each role can only access its allowed schemas (e.g. `duethq_app` cannot select from `pool` or `vault`).
-  Note: when Npgsql and Serilog are first installed (Serilog is expected with P3-04), run a one-off violation demo for each banned prefix (a temporary type in a module `.Domain`/`.Application` namespace that uses it) in the same commit, then revert; the `Npgsql` and `Serilog` prefixes in R4 have never been proven to bite.
+  Note: the `Npgsql` (P1-02 stage A) and `Serilog` (P1-02 stage B) banned prefixes in R4 are proven to bite in P1-02, when those packages first appear; nothing to repeat here.
 
 - [ ] **P3-02 Module DbContext base and RLS interceptor**
   Refs: §10, §11
