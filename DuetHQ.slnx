@@ -44,6 +44,8 @@
   <Folder Name="/tests/">
     <Project Path="tests/DuetHQ.ArchitectureTests/DuetHQ.ArchitectureTests.csproj" />
     <Project Path="tests/DuetHQ.IntegrationTests/DuetHQ.IntegrationTests.csproj" />
+    <Project Path="tests/DuetHQ.TestSupport/DuetHQ.TestSupport.csproj" />
+    <Project Path="tests/DuetHQ.TestSupport.Tests/DuetHQ.TestSupport.Tests.csproj" />
   </Folder>
   <Folder Name="/tests/Modules/">
     <Project Path="tests/Modules/DuetHQ.Modules.Actions.Tests/DuetHQ.Modules.Actions.Tests.csproj" />

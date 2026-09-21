@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <!-- Test-only helpers. Never referenced from src/ (architecture rule R8). Deliberately free of Npgsql/Testcontainers. -->
+  <ItemGroup>
+    <PackageReference Include="Serilog" />
+    <PackageReference Include="Microsoft.Extensions.TimeProvider.Testing" />
+  </ItemGroup>
+
+</Project>
