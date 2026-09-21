@@ -103,12 +103,14 @@ src/
 tests/
   DuetHQ.ArchitectureTests/
   DuetHQ.IntegrationTests/
+  DuetHQ.TestSupport/                 In-memory Serilog sink (raw LogEvents), FakeTimeProvider helpers; test-only, never referenced from src/
+  DuetHQ.TestSupport.Tests/           Container-free tests of TestSupport
   Modules/DuetHQ.Modules.<Name>.Tests/
 ```
 
 Each module project contains folders `Domain`, `Application`, `Infrastructure`, `Endpoints`, plus one public entry point `<Module>Module` in the module's root namespace (e.g. `OrganizationModule` with `AddOrganization(IServiceCollection, IConfiguration)`), which `DuetHQ.Web` calls explicitly from `Program.cs`. Types are `internal` by default; the entry point and `.Contracts` are the only public types. Other modules may reference **only** `<Module>.Contracts`.
 
-`DuetHQ.SharedKernel` is the only project a `.Contracts` project may reference (ADR-0009), so every type shared across modules' contracts lives there: strongly typed IDs, `CohortRef` and the integration-event marker. Layer dependency rules are recorded in ADR-0009 and enforced by `tests/DuetHQ.ArchitectureTests`.
+`DuetHQ.SharedKernel` is the only project a `.Contracts` project may reference (ADR-0009), so every type shared across modules' contracts lives there: strongly typed IDs, `CohortRef` and the integration-event marker. Layer dependency rules are recorded in ADR-0009 and enforced by `tests/DuetHQ.ArchitectureTests`. Test-only code never flows into production: `DuetHQ.TestSupport` and test-only packages (test frameworks, Testcontainers, `Microsoft.Extensions.TimeProvider.Testing`) must be unreachable from `src/`, enforced by architecture rule R8 (project references and the restored package set).
 
 ---
 
@@ -407,11 +409,11 @@ Lead/HR opens panel → policy check → query snapshots (read model)
 
 | Layer | What | Tools |
 |---|---|---|
-| Architecture | Module isolation (declared and compiled reference graph frozen against §5), layering (ADR-0009), namespace/folder integrity, internal-by-default types, invariant guards (e.g. `Insights` has no reference to `Personal`). `DateTime.Now`-style calls are a compile error, not a test (§11.2). | ArchUnitNET, BannedApiAnalyzers |
+| Architecture | Module isolation (declared and compiled reference graph frozen against §5), layering (ADR-0009), namespace/folder integrity, internal-by-default types, invariant guards (e.g. `Insights` has no reference to `Personal`), test-only projects and packages unreachable from `src/` (R8). `DateTime.Now`-style calls are a compile error, not a test (§11.2). | ArchUnitNET, BannedApiAnalyzers |
 | Domain | Scoring, cohort resolution, suppression, playbook specs, safety evaluator — exhaustive unit + property tests | xUnit, FsCheck, Shouldly |
 | Application | Command/query handlers with in-memory fakes | xUnit |
 | Integration | Real PostgreSQL: RLS isolation between tenants, DB role permissions, split write, no timestamps in pool | Testcontainers |
-| Privacy regression | Log sink assertion: submitting a check-in writes no reading/answers to logs | xUnit + test sink |
+| Privacy regression | Log sink assertion: submitting a check-in writes no reading/answers to logs | xUnit + `DuetHQ.TestSupport` in-memory sink (raw `LogEvent`s) |
 
 ---
 

@@ -87,7 +87,11 @@ Goal: the rules that protect privacy and structure are executable before any fea
   Done when: a sample integration test runs against a real container in CI.
   Stages (the container comes first and alone, so its cost is measured against one test):
   - A: `PostgresFixture` (one `postgres:16.15` container for the whole test assembly via an xUnit collection fixture; it exposes only an admin connection string and the measured startup time), one smoke test, a Docker-free drift test comparing the image tag with `docker-compose.yml`, and CI split into container-free / image pull / integration steps. Not in A: database-per-test-class isolation and idempotent role creation (both stage B), and a dedicated container for a pristine cluster (deferred until a test needs it).
-  - B (after A is green on Ubuntu CI): `tests/DuetHQ.TestSupport` (own `ILogEventSink` that keeps raw `LogEvent`s, `FakeTimeProvider` helpers), database/role helpers with a multi-role test, and an architecture rule that no project under `src/` references `DuetHQ.TestSupport` directly or transitively.
+  - B (after A was green on Ubuntu CI). Implemented; this item stays unticked until a green CI run on it has been seen:
+    - `tests/DuetHQ.TestSupport` (class library; only Serilog and Microsoft.Extensions.TimeProvider.Testing, no Npgsql/Testcontainers): `InMemoryLogSink` keeps raw `LogEvent`s, `TestLogger.Create()`, `FakeTime.At`/`AtLocal`. `At` normalises to UTC because `FakeTimeProvider` keeps the offset of its start value and `GetLocalNow()` is then wrong by that offset. `AtLocal` rejects DST-gap and DST-overlap local times instead of guessing. Container-free self-tests in `tests/DuetHQ.TestSupport.Tests` (picked up by the CI container-free step).
+    - `PostgresFixture.DatabaseFor<T>()`: one database per test class in the shared container, memoised by class type, never dropped. `TestDatabase.EnsureRoleAsync` is idempotent and never ALTERs an existing role; `UniqueRoleName` gives collision-free role names, because roles are cluster-wide and not isolated. `MultiRoleTests` (reader/writer roles, SQLSTATE 42501 where a privilege is missing, no ALTER on a repeated call) and `DatabaseIsolationTests` run against the real container.
+    - R8, `TestOnlyDependencyTests`: no `src/` ProjectReference leaves `src/`; `DuetHQ.TestSupport` is unreachable through the whole reference closure; no `src/` project restores a test-only package (`Microsoft.Extensions.TimeProvider.Testing`, `Testcontainers(.*)`, `xunit*`, `Shouldly`, `Microsoft.NET.Test.Sdk`). The package rule reads `obj/project.assets.json` of every `src/` project (effective restored set: props-injected and transitive packages included) and throws when the file is missing. Positive controls keep every rule non-vacuous. Each rule was shown to fail against a temporary violation (direct and transitive ProjectReference, a direct test-only package, and `Serilog.Sinks.XUnit`, whose name is not banned but which pulls `xunit.*` transitively).
+    - R4 banned-prefix demos: `Npgsql` and `Serilog` were each shown to fail the R4 `Domain` and `Application` rules (temporary types in the Organization module, reverted).
 
 ---
 
@@ -159,7 +163,8 @@ Goal: schemas, roles, RLS and outbox work and are proven by integration tests.
   Refs: §10
   - Idempotent SQL script creating schemas and roles with least-privilege grants.
   Done when: integration test verifies each role can only access its allowed schemas (e.g. `duethq_app` cannot select from `pool` or `vault`).
-  Note: the `Npgsql` and `Serilog` banned prefixes in R4 are not yet demonstrated to bite (the stage A `Npgsql` demo was reverted and left no evidence in the repo). P1-02 stage B performs both violation demos and reports the failing outputs; after that, nothing to repeat here.
+  - The real `duethq_*` roles are created once per container by the fixture and never ALTERed or DROPped by tests. A test that needs different role attributes creates its own uniquely named role.
+  Note: the `Npgsql` and `Serilog` banned prefixes in R4 were each shown to bite in P1-02 stage B: a temporary `Domain` and `Application` type depending on `Npgsql.NpgsqlConnection` / `Serilog.ILogger` failed the R4 rules although ArchUnitNET never loads those assemblies; the violations were reverted. Nothing to repeat here.
 
 - [ ] **P3-02 Module DbContext base and RLS interceptor**
   Refs: §10, §11
