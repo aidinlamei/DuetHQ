@@ -27,6 +27,7 @@ If a task seems to require breaking a higher rule, **stop and ask**. Never work 
 - If an architectural decision changes, write or update an ADR in `docs/adr/NNNN-title.md` and update `docs/ARCHITECTURE.md` in the same change.
 - Never change a section marked **INVARIANT** without an ADR and explicit human approval in the conversation.
 - When uncertain whether something could leak identity, treat it as a leak and ask.
+- Before writing any status report or ticking a plan item, verify each claim against the code or command output in this session. Anything you could not verify is listed under NOT verified, never stated as done.
 
 ---
 
